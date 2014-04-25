@@ -6,10 +6,10 @@ require 'queue_classic_batches/version'
 Gem::Specification.new do |spec|
   spec.name          = "queue_classic_batches"
   spec.version       = QueueClassicBatches::VERSION
-  spec.authors       = ["Shane Blazek"]
-  spec.email         = ["shane@....com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.authors       = ["Shane"]
+#  spec.email         = ["shane@....com"]
+  spec.description   = %q{Adds batch functionality to the queue_classic gem}
+  spec.summary       = %q{Adds batch functionality to the queue_classic gem}
   spec.homepage      = ""
   spec.license       = "MIT"
 

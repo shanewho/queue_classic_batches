@@ -1,11 +1,12 @@
 require 'active_record'
+require 'queue_classic_batches'
 
 class AddQueueClassicBatches < ActiveRecord::Migration
   def self.up
-    QueueClassicBatches::Setup.add_batches
+    QC::Batches::Setup.add_batches
   end
 
   def self.down
-    QueueClassicBatches::Setup.remove_batches
+    QC::Batches::Setup.remove_batches
   end
 end

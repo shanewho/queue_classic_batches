@@ -24,7 +24,6 @@ module QC
       def find_batch(id, lock=false)
         s = "SELECT * FROM #{TABLE_NAME} WHERE id = $1"
         s << " FOR UPDATE" if lock
-        puts "#{s}; [#{id}]"
         if r = QC.default_conn_adapter.execute(s, id) 
           {}.tap do |batch|
             batch[:id] = r["id"].to_i
@@ -40,9 +39,10 @@ module QC
       end
 
       def has_pending_jobs?(batch_id) 
-        s="SELECT id from #{QC::TABLE_NAME} WHERE batch_id = $1 LIMIT 1"
+        s="SELECT count(id) from #{QC::TABLE_NAME} WHERE batch_id = $1 LIMIT 1"
         res = QC.default_conn_adapter.execute(s, batch_id)
-        res != nil
+
+        return res['count'].to_i != 0
       end
 
     end

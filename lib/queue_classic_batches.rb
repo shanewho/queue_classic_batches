@@ -3,6 +3,7 @@ require "queue_classic_batches/queue"
 require "queue_classic_batches/setup"
 require "queue_classic_batches/queries"
 require "queue_classic_batches/batch"
+require "queue_classic_batches/worker"
 
 module QC
   module Batches

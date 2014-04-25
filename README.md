@@ -16,6 +16,18 @@ Or install it yourself as:
 
     $ gem install queue_classic_batches
 
+Ruby on Rails Setup
+
+Declare dependencies in Gemfile.
+
+source "http://rubygems.org"
+gem "queue_classic_batches", "0.0.1"
+
+Add the database tables and columns.
+
+rails generate queue_classic_batches:install
+rake db:migrate
+
 ## Usage
 
 TODO: Write usage instructions here

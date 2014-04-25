@@ -45,13 +45,12 @@ module QC
         return unless queuing_complete? && finished?  
         if complete_method
           queue = complete_q_name ? Queue.new(queue) : QC
-          queue.enqueue complete_method, complete_args
+          queue.enqueue complete_method, *complete_args
         end
         delete
 
         time_to_complete = Integer((Time.now - created_at) * 1000)
         QC.log(:'time-to-complete-batch'=>time_to_complete, :source=>id)
-
       end
 
       def delete
@@ -84,13 +83,10 @@ module QC
         !QC::Batches::Queries.has_pending_jobs?(id)
       end
 
-      def self.perform_job(batch_id, args) 
-        method = args.shift
+      def self.perform_job(method, batch_id, args) 
         receiver_str, _, message = method.rpartition('.')
         receiver = eval(receiver_str)
         result = receiver.send(message, *args)
-
-        Batch.complete_if_finished batch_id
 
         return result
       end

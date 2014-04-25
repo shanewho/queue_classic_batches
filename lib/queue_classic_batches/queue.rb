@@ -3,7 +3,8 @@ require "queue_classic"
 module QC
   class Queue
     def enqueue_batch(method, batch_id, *args)
-      batch_method = 'Batch.perform_job'
+      batch_method = 'QC::Batches::Batch.perform_job'
+      args = args.unshift(batch_id)
       args = args.unshift(method)
       QC.log_yield(:measure => 'queue.enqueue_batch') do
         s="INSERT INTO #{TABLE_NAME} (q_name, method, batch_id, args) VALUES ($1, $2, $3, $4)"
