@@ -1,6 +1,6 @@
-# QueueClassicBatches
+# queue_classic_batches
 
-TODO: Write a gem description
+Adds support to queue_classic to enable queuing another job when a group of jobs have all completed.
 
 ## Installation
 
@@ -30,7 +30,28 @@ rake db:migrate
 
 ## Usage
 
-TODO: Write usage instructions here
+1. Create a batch
+2. Queue jobs on the batch
+3. Mark queuing complete
+
+    batch = QC::Batches::Batch.create(complete_method:'MyCompleteJob.perform', complete_args: [123, 'abc'], complete_q_name: 'optional-queue-name')
+    (1..20) do |i| 
+      batch.enqueue("MyJob.perform", i, "Job #{i}")
+    end
+    batch.queuing_complete
+
+
+Make sure your worker deletes or re-queues failed jobs or else queue_classic will leave the job in the jobs table and the batch won't know it has been completed.
+
+    FailedQueue = QC::Queue.new("failed_jobs")
+    class MyWorker < QC::Worker
+
+      def handle_failure(job, e)
+        FailedQueue.enqueue(job[:method], *job[:args])
+        QC.delete job[:id]
+      end
+      
+    end
 
 ## Contributing
 
