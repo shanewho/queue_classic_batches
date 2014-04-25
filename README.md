@@ -34,7 +34,11 @@ rake db:migrate
 2. Queue jobs on the batch
 3. Mark queuing complete
 
-    batch = QC::Batches::Batch.create(complete_method:'MyCompleteJob.perform', complete_args: [123, 'abc'], complete_q_name: 'optional-queue-name')
+Here is an example:
+
+    batch = QC::Batches::Batch.create(complete_method:'MyCompleteJob.perform', 
+                                      complete_args: [123, 'abc'], 
+                                      complete_q_name: 'optional-queue-name')
     (1..20) do |i| 
       batch.enqueue("MyJob.perform", i, "Job #{i}")
     end
