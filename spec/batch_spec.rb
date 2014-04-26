@@ -12,6 +12,10 @@ module QC
           expect(batch.id).to be > 0
         end
 
+        it 'doesnt require args' do
+          expect(Batch.create.id).to be > 0
+        end
+
         context 'with complete job' do
           context 'without args' do
             it 'doesnt error' do
@@ -29,6 +33,11 @@ module QC
       context '#find' do
         it 'returns a batch' do
           expect(Batch.find(batch.id).id).to eq(batch.id)
+        end
+
+        it 'returns a batch created without args' do
+          id = Batch.create.id
+          expect(Batch.find(id).id).to eq(id)
         end
       end
 
@@ -109,58 +118,8 @@ module QC
 
       context '#perform job' do
         it 'performs the job' do
-          expect(Batch.perform_job batch.id, ['"abcd".insert', 0, 'x']).to eq('xabcd');
+          expect(Batch.perform_job '"abcd".insert', batch.id, [0, 'x']).to eq('xabcd');
         end
-
-        context 'with complete job' do
-          context 'with jobs complete' do
-#let(:batch) { Batch.create(complete_method: '"abcd".insert', complete_args: [0, 'a']) }
-
-            context 'with queuing complete' do
-              let(:batch) { Batch.create(queuing_complete: true, complete_method: '"abcd".insert', complete_args: [0, 'a']) }
-
-              it 'queues the complete job' do
-                expect(QC).to receive(:enqueue)#.with('"abcd".insert', [0, 'a']).once
-                Batch.perform_job batch.id, ['Time.now']
-              end
-              it 'deletes the batch' do
-                Batch.perform_job batch.id, ['Time.now']
-                expect(Batch.find(batch.id)).to eq(nil)
-              end
-            end
-
-            context 'but not done queuing' do
-              let(:batch) { Batch.create(complete_method: '"abcd".insert', complete_args: [0, 'a']) }
-
-              it 'doesnt queues the complete job' do
-                expect(QC).not_to receive(:enqueue)
-                Batch.perform_job batch.id, ['Time.now']
-              end
-              it 'doesnt delete the batch' do
-                Batch.perform_job batch.id, ['Time.now']
-                expect(Batch.find(batch.id)).not_to eq(nil)
-              end
-            end
-          end
-        end
-
-        context 'without complete job' do
-          context 'with queuing complete' do
-            before(:each) { batch.queuing_complete }
-            it 'deletes the batch' do
-              Batch.perform_job batch.id, ['Time.now']
-              expect(Batch.find(batch.id)).to eq(nil)
-            end
-          end
-
-          context 'but not done queuing' do
-            it 'doesnt delete the batch' do
-              Batch.perform_job batch.id, ['Time.now']
-              expect(Batch.find(batch.id)).not_to eq(nil)
-            end
-          end
-        end
-
       end
     end
 

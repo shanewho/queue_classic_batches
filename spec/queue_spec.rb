@@ -17,11 +17,11 @@ module QC
         end
 
         it 'saves the original method' do
-          expect(subject[:args]).to eq(['"abcd".insert', 0, 'x']);
+          expect(subject[:args]).to eq(['"abcd".insert', 'abc-123', 0, 'x']);
         end
 
         it 'queues call to BatchJob.perform' do
-          expect(subject[:method]).to eq('Batch.perform_job');
+          expect(subject[:method]).to eq('QC::Batches::Batch.perform_job');
         end
       end
     end

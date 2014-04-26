@@ -8,7 +8,7 @@ module QC
       attr_accessor :complete_method
       attr_accessor :complete_args
 
-      def initialize(args)
+      def initialize(args=nil)
         args.each { |k,v|
           instance_variable_set("@#{k}", v) unless v.nil?
         } if args.is_a?(Hash)
@@ -57,7 +57,8 @@ module QC
         Queries.delete_batch(self.id)
       end
 
-      def self.create(attributes)
+      def self.create(attributes = nil)
+        attributes ||= {}
         complete_method = attributes[:complete_method]
         complete_args = attributes[:complete_args]
         if complete_args && !complete_method; raise 'args was passed but no method' end
@@ -83,7 +84,7 @@ module QC
         !QC::Batches::Queries.has_pending_jobs?(id)
       end
 
-      def self.perform_job(method, batch_id, args) 
+      def self.perform_job(method, batch_id, args=nil) 
         receiver_str, _, message = method.rpartition('.')
         receiver = eval(receiver_str)
         result = receiver.send(message, *args)
