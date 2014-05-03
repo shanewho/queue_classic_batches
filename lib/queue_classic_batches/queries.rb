@@ -29,7 +29,7 @@ module QC
             batch[:id] = r['id'].to_i
             batch[:complete_method] = r['complete_method']
             batch[:complete_args] = JSON.parse(r['complete_args']) if r['complete_args']
-            batch[:complete_queue] = r['complete_queue']
+            batch[:complete_q_name] = r['complete_q_name']
             batch[:queuing_complete] = r['queuing_complete'] == 't'
             if r['created_at']
               batch[:created_at] = Time.parse(r['created_at'])

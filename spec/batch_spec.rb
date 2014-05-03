@@ -100,6 +100,17 @@ module QC
             expect(Batch.find(batch.id)).to eq(nil)
           end
         end
+
+        context 'with complete_q_name' do
+          let(:batch) { Batch.create(complete_q_name: 'abc', complete_method: '"abcd".insert', complete_args: [0, 'a']) }
+          it 'queues the complete job on specified queue' do
+            q = instance_double(QC::Queue)
+            expect(QC::Queue).to receive(:new).with('abc').and_return(q)
+            expect(q).to receive(:enqueue)
+            expect(batch.complete_q_name).to eq('abc')
+            batch.queuing_complete
+          end
+        end
       end
 
       context '#finished?' do

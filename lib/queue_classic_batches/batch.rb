@@ -44,7 +44,7 @@ module QC
       def complete
         return unless queuing_complete? && finished?  
         if complete_method
-          queue = complete_q_name ? Queue.new(queue) : QC
+          queue = complete_q_name ? Queue.new(complete_q_name) : QC
           queue.enqueue complete_method, *complete_args
         end
         delete
